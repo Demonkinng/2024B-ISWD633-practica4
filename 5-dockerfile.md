@@ -49,21 +49,27 @@ docker build -t <nombre imagen>:<tag> .
 - apachectl: Es el script de control para el servidor web Apache. Se utiliza para iniciar, detener y controlar el servidor web.
 - -D FOREGROUND: Esta opción le dice a Apache que se ejecute en primer plano. Por defecto, Apache se ejecuta como un servicio en segundo plano. Sin embargo, en un contenedor Docker, es preferible que el proceso principal (en este caso, Apache) se ejecute en primer plano para que Docker pueda monitorear el estado del proceso. Si Apache se ejecutara en segundo plano, Docker no podría saber si el servidor web está funcionando correctamente o no.
 
- 
 ### Ejecutar el archivo Dockerfile y construir una imagen en la versión 1.0
 No olvides verificar en qué directorio se encuentra el archivo Dockerfile
 ```
-
+docker build -t dockerfile:1.0
 ```
 
 **¿Cuántos pasos se han ejecutado?**
-# RESPONDER 
+
+Se han ejecutado 7 pasos.
 
 ### Inspeccionar la imagen creada
-# COMPLETAR CON UNA CAPTURA
+```
+docker inspect dockerfile:1.0
+```
+
+![Inspeccionar la imagen creada](img/inspectDockerImage.png)
 
 **Modificar el archivo index.html para incluir su nombre y luego crear una nueva versión de la imagen anterior**
 **¿Cuántos pasos se han ejecutado? ¿Observa algo diferente en la creación de la imagen**
+
+Se han ejecutado 7 pasos. Se aprecia que la construcción de la imagen tomo menos tiempo, de 2.8s a 1.5s, esto debido a que docker esta utilizando caché (CACHED) para agilizar la construcción de la imagen.
 
 ## Mecanismo de caché
 Docker usa un mecanismo de caché cuando crea imágenes para acelerar el proceso de construcción y evitar la repetición de pasos que no han cambiado. Cada instrucción en un Dockerfile crea una capa en la imagen final. Docker intenta reutilizar las capas de una construcción anterior si no han cambiado, lo que reduce significativamente el tiempo de construcción.
@@ -75,14 +81,20 @@ Docker usa un mecanismo de caché cuando crea imágenes para acelerar el proceso
 
 ### Crear un contenedor a partir de las imagen creada, mapear todos los puertos
 ```
-
+docker run -d -P --name docfile_container dockerfile:2.0
 ```
 
 ### ¿Con que puerto host se está realizando el mapeo?
-# COMPLETAR CON LA RESPUESTA
+
+```
+docker port docfile_container
+```
+
+Con el puerto 32768.
 
 **¿Qué es una imagen huérfana?**
-# COMPLETAR CON LA RESPUESTA
+
+Una imagen huérfana (o dangling image) es una imagen que no tiene ninguna etiqueta asociada, lo que significa que no está vinculada a ningún contenedor en ejecución o a ninguna etiqueta de imagen.
 
 ### Identificar imágenes huérfanas
 ```
@@ -106,7 +118,7 @@ docker build -t <nombre imagen>:<tag> -f <ruta y nombre del Dockerfile> .
 ```
 
 ## Por ejemplo
+
+```
 docker build -t imagen:1.0 -f Dockerfile-custom .
-
-
-
+```
